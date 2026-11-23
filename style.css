@@ -513,3 +513,81 @@ input, select, textarea {
   color: #fff4df;
   border: 1px solid #655477;
 }
+
+/* AUTOMATIC TEXT COLORS FOR ALL THEMES */
+
+/* LIGHT ACADEMIA */
+body[data-theme="light"] {
+  color: #171717 !important;
+}
+
+body[data-theme="light"] h1,
+body[data-theme="light"] h2,
+body[data-theme="light"] h3,
+body[data-theme="light"] h4,
+body[data-theme="light"] p,
+body[data-theme="light"] span,
+body[data-theme="light"] label,
+body[data-theme="light"] li,
+body[data-theme="light"] strong {
+  color: #171717 !important;
+}
+
+/* GOTHIC DARK ACADEMIA */
+body[data-theme="gothic"] {
+  color: #f1e6d2 !important;
+}
+
+body[data-theme="gothic"] h1,
+body[data-theme="gothic"] h2,
+body[data-theme="gothic"] h3,
+body[data-theme="gothic"] h4,
+body[data-theme="gothic"] p,
+body[data-theme="gothic"] span,
+body[data-theme="gothic"] label,
+body[data-theme="gothic"] li,
+body[data-theme="gothic"] strong {
+  color: #f1e6d2 !important;
+}
+
+/* CELESTIAL PURPLE */
+body[data-theme="celestial"] {
+  color: #30234c !important;
+}
+
+body[data-theme="celestial"] h1,
+body[data-theme="celestial"] h2,
+body[data-theme="celestial"] h3,
+body[data-theme="celestial"] h4,
+body[data-theme="celestial"] p,
+body[data-theme="celestial"] span,
+body[data-theme="celestial"] label,
+body[data-theme="celestial"] li,
+body[data-theme="celestial"] strong {
+  color: #30234c !important;
+}
+
+/* INPUT TEXT */
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea {
+  color: #171717 !important;
+}
+
+body[data-theme="gothic"] input,
+body[data-theme="gothic"] select,
+body[data-theme="gothic"] textarea {
+  color: #f1e6d2 !important;
+}
+
+body[data-theme="celestial"] input,
+body[data-theme="celestial"] select,
+body[data-theme="celestial"] textarea {
+  color: #30234c !important;
+}
+
+/* PLACEHOLDER TEXT */
+input::placeholder,
+textarea::placeholder {
+  opacity: 0.65;
+}

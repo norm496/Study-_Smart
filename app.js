@@ -660,7 +660,7 @@ if (themeSelect) {
 
   document.body.dataset.theme = savedTheme;
   themeSelect.value = savedTheme;
-
+document.body.dataset.theme = this.value;
   themeSelect.addEventListener("change", function() {
     document.body.dataset.theme = this.value;
 
