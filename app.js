@@ -832,3 +832,14 @@ function closeTutorial() {
   const modal = document.getElementById("tutorialModal");
   if (modal) modal.hidden = true;
 }
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(() => console.log("STUDYSMART PWA ready!"))
+      .catch(error =>
+        console.error("PWA registration failed:", error)
+      );
+  });
+}
