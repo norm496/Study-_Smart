@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#3157D5">
+  <meta name="description" content="STUDYSMART - Your Smart Companion in Studying">
+  <title>STUDYSMART</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div>
+      <h2>STUDYSMART</h2>
+      <p>Your Smart Companion in Studying</p>
+    </div>
+    <button id="languageBtn" onclick="toggleLanguage()">EN</button>
+  </header>
+
+  <main id="app">
+
+    <section id="dashboard" class="page active">
+      <div class="welcome">
+        <h1 id="welcomeText">Welcome, Student!</h1>
+        <p>Make today productive.</p>
+      </div>
+
+      <div class="quote-card">
+        <h3>Today's Motivation</h3>
+        <p id="quote">Small steps every day lead to big achievements.</p>
+      </div>
+
+      <div class="prayer-card">
+        <h3>🙏 Prayer Before Studying</h3>
+        <p id="prayer">
+          Lord, guide my mind, strengthen my focus,
+          and help me understand what I am about to learn. Amen.
+        </p>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <h2 id="totalTasks">0</h2>
+          <p>Total Tasks</p>
+        </div>
+        <div class="stat-card">
+          <h2 id="completedTasks">0</h2>
+          <p>Completed</p>
+        </div>
+      </div>
+
+      <h3>Quick Access</h3>
+      <div class="quick-grid">
+        <button onclick="showPage('schedule')">📚<br>My Schedule</button>
+        <button onclick="showPage('timer')">⏱️<br>Study Timer</button>
+        <button onclick="showPage('calendar')">📅<br>Calendar</button>
+        <button onclick="showPage('tasks')">✅<br>My Tasks</button>
+      </div>
+    </section>
+
+    <\
+<div class="card">
+  <h2>Automatic Study Schedule Generator</h2>
+  <p>Add all your school tasks, then let STUDYSMART organize them.</p>
+
+  <div id="taskInputs">
+    <div class="task-input">
+      <label>Subject</label>
+      <input class="subject" placeholder="e.g. Mathematics">
+
+      <label>Topic or Task</label>
+      <input class="topic" placeholder="e.g. Review Fractions">
+
+      <label>Submission Date</label>
+      <input class="deadline" type="date">
+
+      <label>Priority</label>
+      <select class="priority">
+        <option value="High">High</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="Low">Low</option>
+      </select>
+
+      <label>Study Hours</label>
+      <input class="hours" type="number" min="1" max="8" value="1">
+      <hr>
+    </div>
+  </div>
+
+  <button type="button" onclick="addTaskInput()">+ Add Another Task</button>
+  <button type="button" onclick="generateStudySchedule()">Generate My Study Plan</button>
+
+  <div id="generatedSchedule"></div>
+</div>
+
+  <div id="generatedSchedule"></div>
+</div>
+    <section id="timer" class="page">
+      <h2>Study Timer</h2>
+      <div class="timer-box">
+        <h1 id="timerDisplay">25:00</h1>
+        <label>Minutes</label>
+        <input id="timerMinutes" type="number" value="25" min="1">
+        <div class="timer-buttons">
+          <button class="primary" onclick="startTimer()">Start</button>
+          <button onclick="pauseTimer()">Pause</button>
+          <button onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar" class="page">
+      <h2>Study Calendar</h2>
+      <label>Select Date</label>
+      <input type="date" id="calendarDate">
+      <button class="primary" onclick="showCalendarTasks()">View Tasks</button>
+      <div id="calendarResults"></div>
+    </section>
+
+    <section id="tasks" class="page">
+      <h2>My Tasks</h2>
+      <input id="taskInput" placeholder="Enter your task">
+      <input id="taskDeadline" type="date">
+      <button class="primary" onclick="addTask()">Add Task</button>
+      <div id="taskList"></div>
+      <div id="taskInputs">
+    </section>
+
+    <section id="progress" class="page">
+      <h2>My Progress</h2>
+      <div class="progress-card">
+        <h1 id="progressPercent">0%</h1>
+        <div class="progress-track">
+          <div id="progressBar"></div>
+        </div>
+        <p id="progressText">Keep going!</p>
+      </div>
+    </section>
+
+    <section id="profile" class="page">
+      <h2>My Profile</h2>
+      <label>Student Name</label>
+      <input id="studentName" placeholder="Enter your name">
+      <button class="primary" onclick="saveProfile()">Save Profile</button>
+      <p id="profileMessage"></p>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button onclick="showPage('dashboard')">🏠<span>Home</span></button>
+    <button onclick="showPage('schedule')">📚<span>Schedule</span></button>
+    <button onclick="showPage('tasks')">✅<span>Tasks</span></button>
+    <button onclick="showPage('progress')">📊<span>Progress</span></button>
+    <button onclick="showPage('profile')">👤<span>Profile</span></button>
+  </nav>
+  <script src="app.js"></script>
+  
+</body>
+</html

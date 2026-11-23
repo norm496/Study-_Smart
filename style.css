@@ -263,3 +263,98 @@ input:focus {
     margin: auto;
   }
 }
+
+/* STUDYSMART MODERN DESIGN */
+
+body {
+  background: #f3f4ff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #20264a;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 5px 20px rgba(40, 50, 100, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: cardAppear 0.5s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(40, 50, 100, 0.13);
+}
+
+button {
+  background: linear-gradient(135deg, #536dfe, #8065e9);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 18px;
+  margin: 6px 3px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+input, select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 7px 0 14px;
+  border: 1px solid #dce0f2;
+  border-radius: 10px;
+  background: #fafaff;
+  font-size: 15px;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #6878f5;
+  box-shadow: 0 0 0 3px rgba(104, 120, 245, 0.12);
+}
+
+.task-input {
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 14px;
+  background: #f8f8ff;
+  animation: slideIn 0.35s ease;
+}
+
+#generatedSchedule {
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
