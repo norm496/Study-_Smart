@@ -4,9 +4,19 @@
 // Your Smart Companion in Studying
 // ==========================================
 
-// APP DATA
-let schedules = JSON.parse(localStorage.getItem("schedules") || "[]");
-let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+// ---------- APP DATA ----------
+function loadArray(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    console.error("Unable to load " + key, error);
+    return [];
+  }
+}
+
+let schedules = loadArray("schedules");
+let tasks = loadArray("tasks");
 
 let seconds = 25 * 60;
 let timerInterval = null;
@@ -39,7 +49,11 @@ function showPage(pageId) {
 
   if (selectedPage) {
     selectedPage.classList.add("active");
+  } else {
+    console.warn("Page not found:", pageId);
   }
+
+  playStudySound("click");
 }
 
 
@@ -111,6 +125,7 @@ function addSchedule() {
   document.getElementById("endTime").value = "";
 
   alert("Schedule saved!");
+  playStudySound("success");
 }
 
 
@@ -120,10 +135,13 @@ function addSchedule() {
 
 function renderSchedules() {
   const list = document.getElementById("scheduleList");
-
   if (!list) return;
 
-  list.innerHTML = "<h3>My Study Schedules</h3>";
+  list.innerHTML = "";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "My Study Schedules";
+  list.appendChild(heading);
 
   schedules.forEach(schedule => {
     const item = document.createElement("div");
@@ -135,6 +153,7 @@ function renderSchedules() {
       " | " + schedule.start + " - " + schedule.end;
 
     const remove = document.createElement("button");
+    remove.type = "button";
     remove.textContent = "Delete";
 
     remove.onclick = () => {
@@ -154,7 +173,6 @@ function renderSchedules() {
 
 function updateTimerDisplay() {
   const display = document.getElementById("timerDisplay");
-
   if (!display) return;
 
   const minutes = Math.floor(seconds / 60);
@@ -191,6 +209,8 @@ function startTimer() {
       playStudySound("success");
     }
   }, 1000);
+
+  playStudySound("click");
 }
 
 function pauseTimer() {
@@ -236,25 +256,21 @@ function addTask() {
 
   tasks.push({
     id: Date.now(),
-    name: name,
-    deadline: deadline,
+    name,
+    deadline,
     done: false
   });
 
   saveData();
 
   input.value = "";
+  if (deadlineInput) deadlineInput.value = "";
 
-  if (deadlineInput) {
-    deadlineInput.value = "";
-  }
-
-  playStudySound("click");
+  playStudySound("success");
 }
 
 function renderTasks() {
   const list = document.getElementById("taskList");
-
   if (!list) return;
 
   list.innerHTML = "";
@@ -272,6 +288,7 @@ function renderTasks() {
       : "No deadline";
 
     const complete = document.createElement("button");
+    complete.type = "button";
     complete.textContent = task.done ? "Undo" : "Complete";
 
     complete.onclick = () => {
@@ -280,6 +297,7 @@ function renderTasks() {
     };
 
     const remove = document.createElement("button");
+    remove.type = "button";
     remove.textContent = "Delete";
 
     remove.onclick = () => {
@@ -294,18 +312,43 @@ function renderTasks() {
 
 
 // ==========================================
-// AUTOMATIC STUDY SCHEDULE GENERATOR
+// SMART STUDY SCHEDULE GENERATOR
+// Exact Time + Unavailable Periods + Breaks
 // ==========================================
 
-// ADD ANOTHER TASK FORM
+// ADD UNAVAILABLE TIME
+function addUnavailableTime() {
+  const container = document.getElementById("unavailableTimes");
+  if (!container) return;
 
+  const row = document.createElement("div");
+  row.className = "unavailable-row";
+
+  row.innerHTML = `
+    <label>Unavailable From</label>
+    <input type="time" class="unavailable-start" value="12:00">
+
+    <label>Unavailable Until</label>
+    <input type="time" class="unavailable-end" value="13:00">
+
+    <button type="button" class="remove-unavailable">
+      Remove
+    </button>
+    <hr>
+  `;
+
+  row.querySelector(".remove-unavailable").onclick = () => {
+    row.remove();
+  };
+
+  container.appendChild(row);
+}
+
+
+// ADD ANOTHER TASK INPUT
 function addTaskInput() {
   const container = document.getElementById("taskInputs");
-
-  if (!container) {
-    alert("Task input area not found. Check index.html.");
-    return;
-  }
+  if (!container) return;
 
   const form = document.createElement("div");
   form.className = "task-input";
@@ -330,22 +373,116 @@ function addTaskInput() {
     <label>Study Hours</label>
     <input class="hours" type="number" min="1" max="8" value="1">
 
-    <button type="button" class="remove-task">Remove Task</button>
+    <button type="button" class="remove-task">
+      Remove Task
+    </button>
     <hr>
   `;
 
-  form.querySelector(".remove-task").addEventListener("click", () => {
+  form.querySelector(".remove-task").onclick = () => {
     form.remove();
-  });
+  };
 
   container.appendChild(form);
 }
 
 
+// ==========================================
+// TIME UTILITIES
+// ==========================================
+
+function timeToMinutes(time) {
+  const parts = time.split(":");
+  return Number(parts[0]) * 60 + Number(parts[1]);
+}
+
+function formatStudyTime(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 || 12;
+
+  return displayHour + ":" +
+    String(mins).padStart(2, "0") + " " + period;
+}
+
+function formatTimeRange(start, end) {
+  return formatStudyTime(start) + " – " + formatStudyTime(end);
+}
+
+function makeDateKey(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function intervalsOverlap(start1, end1, start2, end2) {
+  return start1 < end2 && end1 > start2;
+}
+
+
+// ==========================================
+// CHECK AVAILABLE TIME
+// ==========================================
+
+function isTimeAvailable(start, end, unavailable, booked) {
+  const overlapsUnavailable = unavailable.some(period =>
+    intervalsOverlap(start, end, period.start, period.end)
+  );
+
+  const overlapsBooked = booked.some(period =>
+    intervalsOverlap(start, end, period.start, period.end)
+  );
+
+  return !overlapsUnavailable && !overlapsBooked;
+}
+
+
+// ==========================================
+// FIND ONE-HOUR STUDY SLOT
+// ==========================================
+
+function findStudySlot(windowStart, windowEnd, unavailable, booked) {
+  const studyDuration = 60;
+  const breakDuration = 5;
+
+  for (
+    let start = windowStart;
+    start + studyDuration + breakDuration <= windowEnd;
+    start += 5
+  ) {
+    const studyEnd = start + studyDuration;
+    const breakEnd = studyEnd + breakDuration;
+
+    if (
+      isTimeAvailable(
+        start,
+        breakEnd,
+        unavailable,
+        booked
+      )
+    ) {
+      return {
+        studyStart: start,
+        studyEnd,
+        breakStart: studyEnd,
+        breakEnd
+      };
+    }
+  }
+
+  return null;
+}
+
+
+// ==========================================
 // GENERATE STUDY PLAN
+// ==========================================
 
 function generateStudySchedule() {
-  const forms = document.querySelectorAll("#taskInputs .task-input");
   const output = document.getElementById("generatedSchedule");
 
   if (!output) {
@@ -353,7 +490,75 @@ function generateStudySchedule() {
     return;
   }
 
+  // PREFERRED STUDY HOURS
+  const startTime = document.getElementById("availableStart")?.value;
+  const endTime = document.getElementById("availableEnd")?.value;
+
+  if (!startTime || !endTime) {
+    alert("Please select your preferred study hours.");
+    return;
+  }
+
+  const windowStart = timeToMinutes(startTime);
+  const windowEnd = timeToMinutes(endTime);
+
+  if (windowEnd <= windowStart) {
+    alert("Your ending time must be later than your starting time. Overnight study windows are not supported.");
+    return;
+  }
+
+  // UNAVAILABLE PERIODS
+  const unavailable = [];
+
+  const unavailableRows = document.querySelectorAll(
+    "#unavailableTimes .unavailable-row"
+  );
+
+  for (const row of unavailableRows) {
+    const start = row.querySelector(".unavailable-start")?.value;
+    const end = row.querySelector(".unavailable-end")?.value;
+
+    if (!start || !end) {
+      alert("Please complete all unavailable time fields.");
+      return;
+    }
+
+    const startMinutes = timeToMinutes(start);
+    const endMinutes = timeToMinutes(end);
+
+    if (
+      endMinutes <= startMinutes ||
+      startMinutes < windowStart ||
+      endMinutes > windowEnd
+    ) {
+      alert("Unavailable periods must be valid and within your preferred study hours.");
+      return;
+    }
+
+    unavailable.push({
+      start: startMinutes,
+      end: endMinutes
+    });
+  }
+
+  unavailable.sort((a, b) => a.start - b.start);
+
+  for (let i = 1; i < unavailable.length; i++) {
+    if (unavailable[i].start < unavailable[i - 1].end) {
+      alert("Your unavailable time periods overlap. Please correct them.");
+      return;
+    }
+  }
+
+  // TASK INFORMATION
+  const forms = document.querySelectorAll(
+    "#taskInputs .task-input"
+  );
+
   const tasksToPlan = [];
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   for (const form of forms) {
     const subject = form.querySelector(".subject")?.value.trim() || "";
@@ -362,31 +567,23 @@ function generateStudySchedule() {
     const priority = form.querySelector(".priority")?.value || "Medium";
     const hoursValue = form.querySelector(".hours")?.value || "";
 
-    // Ignore completely empty forms
-    if (!subject && !topic && !deadline) {
-      continue;
-    }
+    if (!subject && !topic && !deadline) continue;
 
-    // Check required information
     if (!subject || !topic || !deadline || !hoursValue) {
-      alert("Please complete all fields in each task you started.");
+      alert("Please complete all fields in every task you started.");
       return;
     }
 
     const hours = Number(hoursValue);
+    const dueDate = new Date(deadline + "T00:00:00");
 
-    if (!Number.isFinite(hours) || hours < 1 || hours > 8) {
+    if (!Number.isInteger(hours) || hours < 1 || hours > 8) {
       alert("Study hours must be between 1 and 8.");
       return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const dueDate = new Date(deadline + "T00:00:00");
-
     if (Number.isNaN(dueDate.getTime()) || dueDate < today) {
-      alert("Please choose a valid deadline that is today or later.");
+      alert("Please select a valid deadline that is today or later.");
       return;
     }
 
@@ -399,12 +596,12 @@ function generateStudySchedule() {
     });
   }
 
-  if (tasksToPlan.length === 0) {
+  if (!tasksToPlan.length) {
     alert("Please enter at least one complete task.");
     return;
   }
 
-  // Sort by deadline and priority
+  // SORT BY DEADLINE AND PRIORITY
   const priorityOrder = {
     High: 1,
     Medium: 2,
@@ -416,60 +613,117 @@ function generateStudySchedule() {
     priorityOrder[a.priority] - priorityOrder[b.priority]
   );
 
-  // Organize tasks by date
+  // CREATE AVAILABLE DATES
+  const dates = [];
+
+  const latestDeadline = new Date(
+    Math.max(
+      ...tasksToPlan.map(task =>
+        new Date(task.deadline + "T00:00:00").getTime()
+      )
+    )
+  );
+
+  for (
+    let date = new Date(today);
+    date <= latestDeadline;
+    date.setDate(date.getDate() + 1)
+  ) {
+    dates.push(new Date(date));
+  }
+
+  // PREPARE DAILY SCHEDULE
   const plan = {};
+  const bookedByDate = {};
+  const unscheduled = [];
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  tasksToPlan.forEach(task => {
-    const dueDate = new Date(task.deadline + "T00:00:00");
-    const availableDays = [];
-
-    for (
-      let date = new Date(today);
-      date < dueDate;
-      date.setDate(date.getDate() + 1)
-    ) {
-      availableDays.push(new Date(date));
-    }
-
-    // If deadline is today, schedule it today
-    if (availableDays.length === 0) {
-      availableDays.push(new Date(today));
-    }
-
-    let remainingHours = task.hours;
-
-    availableDays.forEach((date, index) => {
-      if (remainingHours <= 0) return;
-
-      const daysLeft = availableDays.length - index;
-      const sessionHours = Math.ceil(remainingHours / daysLeft);
-
-      const dateKey = [
-        date.getFullYear(),
-        String(date.getMonth() + 1).padStart(2, "0"),
-        String(date.getDate()).padStart(2, "0")
-      ].join("-");
-
-      if (!plan[dateKey]) {
-        plan[dateKey] = [];
-      }
-
-      plan[dateKey].push({
-        subject: task.subject,
-        topic: task.topic,
-        priority: task.priority,
-        hours: sessionHours,
-        deadline: task.deadline
-      });
-
-      remainingHours -= sessionHours;
-    });
+  dates.forEach(date => {
+    const key = makeDateKey(date);
+    plan[key] = [];
+    bookedByDate[key] = [];
   });
 
-  // DISPLAY THE PLAN
+  // ALLOCATE STUDY SESSIONS
+  tasksToPlan.forEach(task => {
+    const dueDate = new Date(task.deadline + "T00:00:00");
+
+    const availableDates = dates.filter(date =>
+      date <= dueDate
+    );
+
+    let remainingSessions = task.hours;
+
+    for (
+      let session = 0;
+      session < task.hours;
+      session++
+    ) {
+      if (remainingSessions <= 0) break;
+
+      const preferredIndex = Math.floor(
+        session * availableDates.length / task.hours
+      );
+
+      const searchOrder = [
+        ...availableDates.slice(preferredIndex),
+        ...availableDates.slice(0, preferredIndex)
+      ];
+
+      let placed = false;
+
+      for (const date of searchOrder) {
+        const dateKey = makeDateKey(date);
+
+        const slot = findStudySlot(
+          windowStart,
+          windowEnd,
+          unavailable,
+          bookedByDate[dateKey]
+        );
+
+        if (!slot) continue;
+
+        plan[dateKey].push({
+          type: "study",
+          subject: task.subject,
+          topic: task.topic,
+          priority: task.priority,
+          deadline: task.deadline,
+          start: slot.studyStart,
+          end: slot.studyEnd
+        });
+
+        plan[dateKey].push({
+          type: "break",
+          subject: "📱 Social Media Break",
+          topic: "Enjoy a 5-minute break!",
+          start: slot.breakStart,
+          end: slot.breakEnd
+        });
+
+        bookedByDate[dateKey].push({
+          start: slot.studyStart,
+          end: slot.breakEnd
+        });
+
+        remainingSessions--;
+        placed = true;
+        break;
+      }
+
+      if (!placed) break;
+    }
+
+    if (remainingSessions > 0) {
+      unscheduled.push({
+        subject: task.subject,
+        remaining: remainingSessions,
+        deadline: task.deadline
+      });
+    }
+  });
+
+  // DISPLAY GENERATED PLAN
   output.innerHTML = "";
 
   const heading = document.createElement("h2");
@@ -478,47 +732,139 @@ function generateStudySchedule() {
 
   const intro = document.createElement("p");
   intro.textContent =
-    "Your tasks are organized by submission date and priority.";
+    "Your study sessions are arranged according to your deadlines, priorities, preferred hours, and unavailable periods.";
   output.appendChild(intro);
 
-  Object.keys(plan).sort().forEach(date => {
+  let totalStudySessions = 0;
+  let totalBreaks = 0;
+
+  Object.keys(plan).sort().forEach(dateKey => {
+    const items = plan[dateKey].sort(
+      (a, b) => a.start - b.start
+    );
+
+    // Remove the final break of the day.
+    const studyIndexes = items
+      .map((item, index) => item.type === "study" ? index : -1)
+      .filter(index => index !== -1);
+
+    if (studyIndexes.length) {
+      const lastStudyIndex = studyIndexes[studyIndexes.length - 1];
+
+      const nextBreak = items.findIndex(
+        (item, index) =>
+          index > lastStudyIndex && item.type === "break"
+      );
+
+      if (nextBreak !== -1) {
+        items.splice(nextBreak, 1);
+      }
+    }
+
+    if (!items.length) return;
+
     const dayCard = document.createElement("div");
     dayCard.className = "generated-day";
 
     const dayHeading = document.createElement("h3");
 
     dayHeading.textContent =
-      new Date(date + "T00:00:00").toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      });
+      new Date(dateKey + "T00:00:00").toLocaleDateString(
+        language === "tl" ? "fil-PH" : "en-US",
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
 
     dayCard.appendChild(dayHeading);
 
-    plan[date].forEach(item => {
-      const taskCard = document.createElement("div");
-      taskCard.className = "generated-task";
+    items.forEach(item => {
+      const card = document.createElement("div");
+
+      card.className = item.type === "break"
+        ? "generated-task social-break"
+        : "generated-task";
+
+      const time = document.createElement("p");
+      time.className = "schedule-time";
+      time.textContent = formatTimeRange(item.start, item.end);
 
       const title = document.createElement("h4");
       title.textContent = item.subject;
 
       const details = document.createElement("p");
-      details.textContent =
-        item.topic + " | " +
-        item.hours + " study hour(s) | " +
-        item.priority + " priority | Deadline: " +
-        item.deadline;
 
-      taskCard.append(title, details);
-      dayCard.appendChild(taskCard);
+      if (item.type === "break") {
+        details.textContent = "5-minute social media break";
+        totalBreaks++;
+      } else {
+        details.textContent =
+          item.topic + " | " +
+          item.priority + " Priority | Deadline: " +
+          item.deadline;
+
+        totalStudySessions++;
+      }
+
+      card.append(time, title, details);
+      dayCard.appendChild(card);
     });
 
     output.appendChild(dayCard);
   });
 
-  localStorage.setItem("generatedStudyPlan", JSON.stringify(plan));
+  // UNSCHEDULED TASKS WARNING
+  if (unscheduled.length) {
+    const warning = document.createElement("div");
+    warning.className = "schedule-warning";
+
+    const warningTitle = document.createElement("h3");
+    warningTitle.textContent = "⚠️ Some Sessions Need More Time";
+
+    const message = document.createElement("p");
+    message.textContent =
+      "Some requested study hours could not fit before their deadlines. Consider extending your study availability or adjusting your study hours.";
+
+    warning.append(warningTitle, message);
+
+    unscheduled.forEach(task => {
+      const p = document.createElement("p");
+      p.textContent =
+        task.subject + ": " + task.remaining +
+        " hour(s) still unscheduled. Deadline: " +
+        task.deadline;
+
+      warning.appendChild(p);
+    });
+
+    output.appendChild(warning);
+  }
+
+  // SUMMARY
+  const summary = document.createElement("p");
+  summary.textContent =
+    "Total study sessions: " + totalStudySessions +
+    " | Social media breaks: " + totalBreaks;
+
+  output.appendChild(summary);
+
+  // SAVE GENERATED PLAN
+  localStorage.setItem(
+    "generatedStudyPlan",
+    JSON.stringify(plan)
+  );
+
+  localStorage.setItem(
+    "studyAvailability",
+    JSON.stringify({
+      startTime,
+      endTime,
+      unavailable
+    })
+  );
 
   output.scrollIntoView({
     behavior: "smooth",
@@ -526,7 +872,12 @@ function generateStudySchedule() {
   });
 
   playStudySound("success");
-  alert("Your study plan has been generated!");
+
+  alert(
+    unscheduled.length
+      ? "Your study plan was generated, but some hours could not be scheduled."
+      : "Your study plan has been generated successfully!"
+  );
 }
 
 
@@ -557,7 +908,9 @@ function showCalendarTasks() {
   matchingSchedules.forEach(schedule => {
     const p = document.createElement("p");
     p.textContent =
-      schedule.subject + " (" + schedule.start + " - " + schedule.end + ")";
+      schedule.subject + " (" +
+      schedule.start + " - " + schedule.end + ")";
+
     results.appendChild(p);
   });
 
@@ -576,12 +929,11 @@ function showCalendarTasks() {
 
 
 // ==========================================
-// PROFILE
+// STUDENT PROFILE
 // ==========================================
 
 function saveProfile() {
   const nameInput = document.getElementById("studentName");
-
   if (!nameInput) return;
 
   const name = nameInput.value.trim();
@@ -597,13 +949,21 @@ function saveProfile() {
   const message = document.getElementById("profileMessage");
 
   if (welcome) {
-    welcome.textContent = "Welcome, " + name + "!";
+    welcome.textContent =
+      language === "en"
+        ? "Welcome, " + name + "!"
+        : "Maligayang pagdating, " + name + "!";
   }
 
   if (message) {
-    message.textContent = "Profile saved successfully!";
+    message.textContent =
+      language === "en"
+        ? "Profile saved successfully!"
+        : "Matagumpay na na-save ang profile!";
   }
-}
+
+  playStudySound("success");
+  }
 
 
 // ==========================================
@@ -613,6 +973,12 @@ function saveProfile() {
 function toggleLanguage() {
   language = language === "en" ? "tl" : "en";
 
+  localStorage.setItem("language", language);
+
+  applyLanguage();
+}
+
+function applyLanguage() {
   const button = document.getElementById("languageBtn");
   const welcome = document.getElementById("welcomeText");
   const quoteHeading = document.querySelector(".quote-card h3");
@@ -623,10 +989,16 @@ function toggleLanguage() {
     button.textContent = language === "en" ? "EN" : "TL";
   }
 
+  const savedName = localStorage.getItem("studentName");
+
   if (welcome) {
-    welcome.textContent = language === "en"
-      ? "Welcome, Student!"
-      : "Maligayang pagdating, Mag-aaral!";
+    welcome.textContent = savedName
+      ? (language === "en"
+          ? "Welcome, " + savedName + "!"
+          : "Maligayang pagdating, " + savedName + "!")
+      : (language === "en"
+          ? "Welcome, Student!"
+          : "Maligayang pagdating, Mag-aaral!");
   }
 
   if (quoteHeading) {
@@ -647,7 +1019,7 @@ function toggleLanguage() {
       : "Panginoon, gabayan Mo ang aking isipan, palakasin ang aking pokus, at tulungan akong maunawaan ang aking pag-aaralan. Amen.";
   }
 
-  localStorage.setItem("language", language);
+  updateTutorialLanguage();
 }
 
 
@@ -663,79 +1035,43 @@ function playStudySound(type = "click") {
 
   if (!AudioContextClass) return;
 
-  const audio = new AudioContextClass();
-  const oscillator = audio.createOscillator();
-  const gain = audio.createGain();
+  try {
+    const audio = new AudioContextClass();
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
 
-  oscillator.connect(gain);
-  gain.connect(audio.destination);
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
 
-  oscillator.type = "sine";
+    oscillator.type = "sine";
 
-  if (type === "success") {
-    oscillator.frequency.setValueAtTime(523, audio.currentTime);
-    oscillator.frequency.setValueAtTime(659, audio.currentTime + 0.12);
-    oscillator.frequency.setValueAtTime(784, audio.currentTime + 0.24);
-  } else {
-    oscillator.frequency.setValueAtTime(600, audio.currentTime);
-  }
+    if (type === "success") {
+      oscillator.frequency.setValueAtTime(523, audio.currentTime);
+      oscillator.frequency.setValueAtTime(659, audio.currentTime + 0.12);
+      oscillator.frequency.setValueAtTime(784, audio.currentTime + 0.24);
+    } else {
+      oscillator.frequency.setValueAtTime(600, audio.currentTime);
+    }
 
-  gain.gain.setValueAtTime(0.08, audio.currentTime);
+    gain.gain.setValueAtTime(0.08, audio.currentTime);
 
-  const duration = type === "success" ? 0.4 : 0.12;
+    const duration = type === "success" ? 0.4 : 0.12;
 
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    audio.currentTime + duration
-  );
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      audio.currentTime + duration
+    );
 
-  oscillator.start();
-  oscillator.stop(audio.currentTime + duration);
+    oscillator.start();
+    oscillator.stop(audio.currentTime + duration);
 
-  oscillator.onended = () => audio.close();
-}
-
-
-// ==========================================
-// INITIALIZE APPLICATION
-// ==========================================
-
-function initializeApp() {
-  const name = localStorage.getItem("studentName");
-  const nameInput = document.getElementById("studentName");
-  const welcome = document.getElementById("welcomeText");
-
-  if (name) {
-    if (nameInput) nameInput.value = name;
-    if (welcome) welcome.textContent = "Welcome, " + name + "!";
-  }
-
-  updateDashboard();
-  updateTimerDisplay();
-
-  // Restore saved language
-  if (language === "tl") {
-    language = "en";
-    toggleLanguage();
-  }
-
-  // Set default calendar date
-  const calendarDate = document.getElementById("calendarDate");
-
-  if (calendarDate) {
-    const today = new Date();
-
-    const localDate = [
-      today.getFullYear(),
-      String(today.getMonth() + 1).padStart(2, "0"),
-      String(today.getDate()).padStart(2, "0")
-    ].join("-");
-
-    calendarDate.value = localDate;
+    oscillator.onended = () => audio.close();
+  } catch (error) {
+    console.warn("Sound could not be played:", error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", initializeApp);
+
 // ==========================================
 // HELP AND TUTORIAL
 // ==========================================
@@ -745,6 +1081,7 @@ function showTutorial() {
 
   if (modal) {
     modal.hidden = false;
+    updateTutorialLanguage();
   }
 }
 
@@ -755,8 +1092,9 @@ function closeTutorial() {
     modal.hidden = true;
   }
 }
+
 function updateTutorialLanguage() {
-  const isTagalog = language === "TL";
+  const isTagalog = language === "tl";
 
   const english = {
     title: "📚 STUDYSMART GUIDE",
@@ -796,50 +1134,78 @@ function updateTutorialLanguage() {
       "7. 👤 Profile ng Mag-aaral"
     ],
     texts: [
-      "Makikita rito ang iyong inspirasyon, panalangin, buod ng mga gawain, at mga shortcut.",
-      "Ilagay ang asignatura, paksa, deadline, prayoridad, at oras ng pag-aaral. Magdagdag pa ng gawain kung kinakailangan, pagkatapos ay pindutin ang Generate My Study Plan.",
-      "Magdagdag ng iyong mga gawain at markahan ang mga ito bilang kumpleto kapag natapos na.",
-      "Piliin ang tagal ng iyong pag-aaral at pindutin ang Start. Gamitin ang Pause o Reset kung kinakailangan.",
-      "Pumili ng petsa upang makita ang mga nakatakdang gawain.",
-      "Tingnan ang bilang ng iyong mga natapos na gawain at porsiyento ng iyong progreso.",
-      "Ilagay ang iyong pangalan at pindutin ang Save Profile upang mai-save ang iyong impormasyon."
+      "Tingnan ang iyong inspirasyon, panalangin, buod ng mga gawain, at mga shortcut.",
+      "Ilagay ang asignatura, paksa, deadline, prayoridad, at oras ng pag-aaral. Magdagdag ng iba pang gawain kung kinakailangan, pagkatapos ay pindutin ang Generate My Study Plan.",
+      "Magdagdag ng mga gawain at markahan ang mga ito kapag natapos na.",
+      "Piliin ang tagal ng pag-aaral at pindutin ang Start. Gamitin ang Pause o Reset kung kinakailangan.",
+      "Pumili ng petsa upang makita ang iyong mga nakatakdang gawain.",
+      "Tingnan ang mga natapos na gawain at porsiyento ng iyong progreso.",
+      "Ilagay ang iyong pangalan at i-save ang iyong profile."
     ],
-    footer: "✨ Ayusin ang oras. Magpokus sa pag-aaral. Abutin ang iyong mga pangarap!",
+    footer: "✨ Planuhin ang oras. Magpokus. Abutin ang iyong mga pangarap!",
     done: "Naiintindihan Ko!"
   };
 
   const content = isTagalog ? tagalog : english;
 
-  document.getElementById("tutorialTitle").textContent = content.title;
-  document.getElementById("tutorialIntro").textContent = content.intro;
-  document.getElementById("tutorialFooter").textContent = content.footer;
-  document.getElementById("tutorialDone").textContent = content.done;
+  const titleElement = document.getElementById("tutorialTitle");
+  const introElement = document.getElementById("tutorialIntro");
+  const footerElement = document.getElementById("tutorialFooter");
+  const doneElement = document.getElementById("tutorialDone");
+
+  if (titleElement) titleElement.textContent = content.title;
+  if (introElement) introElement.textContent = content.intro;
+  if (footerElement) footerElement.textContent = content.footer;
+  if (doneElement) doneElement.textContent = content.done;
 
   for (let i = 0; i < 7; i++) {
-    document.getElementById(`guide${i + 1}Title`).textContent = content.titles[i];
-    document.getElementById(`guide${i + 1}Text`).textContent = content.texts[i];
+    const title = document.getElementById("guide" + (i + 1) + "Title");
+    const text = document.getElementById("guide" + (i + 1) + "Text");
+
+    if (title) title.textContent = content.titles[i];
+    if (text) text.textContent = content.texts[i];
   }
 }
 
-function showTutorial() {
-  updateTutorialLanguage();
+// ==========================================
+// INITIALIZE APPLICATION
+// ==========================================
 
-  const modal = document.getElementById("tutorialModal");
-  if (modal) modal.hidden = false;
+function initializeApp() {
+  const name = localStorage.getItem("studentName");
+  const nameInput = document.getElementById("studentName");
+
+  if (name && nameInput) {
+    nameInput.value = name;
+  }
+
+  updateDashboard();
+  updateTimerDisplay();
+  applyLanguage();
+
+  // Set today's date in the calendar
+  const calendarDate = document.getElementById("calendarDate");
+
+  if (calendarDate) {
+    const today = new Date();
+
+    calendarDate.value = [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, "0"),
+      String(today.getDate()).padStart(2, "0")
+    ].join("-");
+  }
 }
 
-function closeTutorial() {
-  const modal = document.getElementById("tutorialModal");
-  if (modal) modal.hidden = true;
+
+// ==========================================
+// START APPLICATION
+// ==========================================
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+  initializeApp();
 }
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .then(() => console.log("STUDYSMART PWA ready!"))
-      .catch(error =>
-        console.error("PWA registration failed:", error)
-      );
-  });
-}
+      

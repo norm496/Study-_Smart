@@ -824,3 +824,51 @@ button:active {
     transform: translateY(0);
   }
 }
+
+/* SMART STUDY SCHEDULE */
+
+.unavailable-row {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  background: rgba(109, 74, 203, 0.08);
+}
+
+.schedule-time {
+  font-weight: 800;
+  color: #3157d5;
+  margin-bottom: 6px;
+}
+
+.generated-task {
+  padding: 15px;
+  margin: 12px 0;
+  border-radius: 14px;
+  background: rgba(49, 87, 213, 0.08);
+}
+
+.social-break {
+  background: rgba(255, 190, 90, 0.18);
+  border-left: 4px solid #e6a23c;
+}
+
+.social-break .schedule-time {
+  color: #a66b12;
+}
+
+.schedule-warning {
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 12px;
+  background: rgba(220, 70, 70, 0.10);
+}
+
+.small-note {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin: 10px 0;
+}
+
+.unavailable-row input {
+  margin-bottom: 10px;
+}

@@ -1,23 +1,20 @@
-\
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#3157d5">
-<link rel="icon" href="./icons/icon-192.png">
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#3157D5">
-  <meta name="description" content="STUDYSMART - Your Smart Companion in Studying">
 
   <title>STUDYSMART</title>
 
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#3157d5">
+  <meta name="description" content="STUDYSMART - Your Smart Companion in Studying">
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -34,8 +31,6 @@
   </div>
 
   <!-- HEADER -->
-  <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#6d4acb">
   <header class="topbar">
     <div>
       <h2>STUDYSMART</h2>
@@ -43,68 +38,71 @@
     </div>
 
     <div class="header-actions">
-  <button type="button" onclick="showTutorial()">
-    ❔ Help Tutorial
-  </button>
+      <button type="button" onclick="showTutorial()">
+        ❔ Help Tutorial
+      </button>
 
-  <button id="languageBtn" type="button" onclick="toggleLanguage()">
-    EN TL
-  </button>
+      <button id="languageBtn" type="button" onclick="toggleLanguage()">
+        EN TL
+      </button>
     </div>
   </header>
-<!-- HELP TUTORIAL -->
-<<div id="tutorialModal" class="tutorial-modal" hidden>
-  <div class="tutorial-content">
-    <button class="tutorial-close" type="button" onclick="closeTutorial()">✕</button>
 
-    <h2 id="tutorialTitle">📚 STUDYSMART GUIDE</h2>
-    <p id="tutorialIntro">Welcome! Here's how to use your study companion.</p>
+  <!-- HELP TUTORIAL -->
+  <div id="tutorialModal" class="tutorial-modal" hidden>
+    <div class="tutorial-content">
 
-    <div class="tutorial-step">
-      <h3 id="guide1Title">1. 🏠 Dashboard</h3>
-      <p id="guide1Text">View your motivation, prayer, task summary, and quick access buttons.</p>
+      <button class="tutorial-close" type="button" onclick="closeTutorial()">✕</button>
+
+      <h2 id="tutorialTitle">📚 STUDYSMART GUIDE</h2>
+      <p id="tutorialIntro">Welcome! Here's how to use your study companion.</p>
+
+      <div class="tutorial-step">
+        <h3 id="guide1Title">1. 🏠 Dashboard</h3>
+        <p id="guide1Text">View your motivation, prayer, task summary, and quick access buttons.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide2Title">2. 📅 Create Your Study Plan</h3>
+        <p id="guide2Text">Enter your subject, topic, deadline, priority, and study hours.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide3Title">3. ✅ Manage Your Tasks</h3>
+        <p id="guide3Text">Add your activities and mark them complete when finished.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide4Title">4. ⏱️ Study Timer</h3>
+        <p id="guide4Text">Choose your study duration and tap Start.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide5Title">5. 🗓️ Study Calendar</h3>
+        <p id="guide5Text">Select a date to check your scheduled activities.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide6Title">6. 📊 Track Your Progress</h3>
+        <p id="guide6Text">Check your completed tasks and progress percentage.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3 id="guide7Title">7. 👤 Student Profile</h3>
+        <p id="guide7Text">Enter your name and save your profile.</p>
+      </div>
+
+      <p class="tutorial-footer" id="tutorialFooter">
+        ✨ Plan your time. Stay focused. Achieve your goals!
+      </p>
+
+      <button type="button" class="primary" onclick="closeTutorial()" id="tutorialDone">
+        Got It!
+      </button>
+
     </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide2Title">2. 📅 Create Your Study Plan</h3>
-      <p id="guide2Text">Enter your subject, topic, deadline, priority, and study hours.</p>
-    </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide3Title">3. ✅ Manage Your Tasks</h3>
-      <p id="guide3Text">Add your activities and mark them complete when finished.</p>
-    </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide4Title">4. ⏱️ Study Timer</h3>
-      <p id="guide4Text">Choose your study duration and tap Start.</p>
-    </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide5Title">5. 🗓️ Study Calendar</h3>
-      <p id="guide5Text">Select a date to check your scheduled activities.</p>
-    </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide6Title">6. 📊 Track Your Progress</h3>
-      <p id="guide6Text">Check your completed tasks and progress percentage.</p>
-    </div>
-
-    <div class="tutorial-step">
-      <h3 id="guide7Title">7. 👤 Student Profile</h3>
-      <p id="guide7Text">Enter your name and save your profile.</p>
-    </div>
-
-    <p class="tutorial-footer" id="tutorialFooter">
-      ✨ Plan your time. Stay focused. Achieve your goals!
-    </p>
-
-    <button type="button" class="primary" onclick="closeTutorial()" id="tutorialDone">
-      Got It!
-    </button>
   </div>
-</div>
-</>
+
   <main id="app">
 
     <!-- TEAM CREDITS -->
@@ -138,9 +136,7 @@
 
       <div class="quote-card">
         <h3>Today's Motivation</h3>
-        <p id="quote">
-          Small steps every day lead to big achievements.
-        </p>
+        <p id="quote">Small steps every day lead to big achievements.</p>
       </div>
 
       <div class="prayer-card">
@@ -166,59 +162,60 @@
       <h3>Quick Access</h3>
 
       <div class="quick-grid">
-        <button type="button" onclick="showPage('schedule')">
-          📚<br>My Schedule
-        </button>
-
-        <button type="button" onclick="showPage('timer')">
-          ⏱️<br>Study Timer
-        </button>
-
-        <button type="button" onclick="showPage('calendar')">
-          📅<br>Calendar
-        </button>
-
-        <button type="button" onclick="showPage('tasks')">
-          ✅<br>My Tasks
-        </button>
+        <button type="button" onclick="showPage('schedule')">📚<br>My Schedule</button>
+        <button type="button" onclick="showPage('timer')">⏱️<br>Study Timer</button>
+        <button type="button" onclick="showPage('calendar')">📅<br>Calendar</button>
+        <button type="button" onclick="showPage('tasks')">✅<br>My Tasks</button>
       </div>
 
     </section>
 
     <!-- AUTOMATIC STUDY SCHEDULE -->
     <section id="schedule" class="page">
-
       <div class="card">
-        <h2>Automatic Study Schedule Generator</h2>
 
-        <p>
-          Add all your school tasks, then let STUDYSMART organize them.
+        <h2>Automatic Study Schedule Generator</h2>
+        <p>Let STUDYSMART organize your subjects around your available time.</p>
+
+        <h3>1. Preferred Study Hours</h3>
+
+        <label>Available Start Time</label>
+        <input type="time" id="availableStart" value="08:00">
+
+        <label>Available End Time</label>
+        <input type="time" id="availableEnd" value="21:00">
+
+        <hr>
+
+        <h3>2. Unavailable Time</h3>
+        <p>Select the time periods when you CANNOT study. You can add multiple unavailable periods.</p>
+
+        <div id="unavailableTimes"></div>
+
+        <button type="button" onclick="addUnavailableTime()">
+          + Add Unavailable Time
+        </button>
+
+        <p class="small-note">
+          These unavailable periods apply every day.
+          STUDYSMART will avoid scheduling study sessions during these times.
         </p>
 
-        <div id="taskInputs">
+        <hr>
 
-          <!-- FIRST TASK FORM -->
+        <h3>3. Your School Tasks</h3>
+
+        <div id="taskInputs">
           <div class="task-input">
 
             <label>Subject</label>
-            <input
-              class="subject"
-              type="text"
-              placeholder="e.g. Mathematics"
-            >
+            <input class="subject" type="text" placeholder="e.g. Mathematics">
 
             <label>Topic or Task</label>
-            <input
-              class="topic"
-              type="text"
-              placeholder="e.g. Review Fractions"
-            >
+            <input class="topic" type="text" placeholder="e.g. Review Fractions">
 
             <label>Submission Date</label>
-            <input
-              class="deadline"
-              type="date"
-            >
+            <input class="deadline" type="date">
 
             <label>Priority</label>
             <select class="priority">
@@ -228,38 +225,23 @@
             </select>
 
             <label>Study Hours</label>
-            <input
-              class="hours"
-              type="number"
-              min="1"
-              max="8"
-              value="1"
-            >
+            <input class="hours" type="number" min="1" max="8" value="1">
 
             <hr>
-
           </div>
         </div>
 
-        <button
-          type="button"
-          onclick="addTaskInput()"
-        >
+        <button type="button" onclick="addTaskInput()">
           + Add Another Task
         </button>
 
-        <button
-          type="button"
-          onclick="generateStudySchedule()"
-        >
+        <button class="primary" type="button" onclick="generateStudySchedule()">
           Generate My Study Plan
         </button>
 
-        <!-- GENERATED RESULTS -->
         <div id="generatedSchedule"></div>
 
       </div>
-
     </section>
 
     <!-- STUDY TIMER -->
@@ -268,41 +250,16 @@
       <h2>Study Timer</h2>
 
       <div class="timer-box">
-
         <h1 id="timerDisplay">25:00</h1>
 
         <label>Minutes</label>
-        <input
-          id="timerMinutes"
-          type="number"
-          value="25"
-          min="1"
-        >
+        <input id="timerMinutes" type="number" value="25" min="1">
 
         <div class="timer-buttons">
-          <button
-            class="primary"
-            type="button"
-            onclick="startTimer()"
-          >
-            Start
-          </button>
-
-          <button
-            type="button"
-            onclick="pauseTimer()"
-          >
-            Pause
-          </button>
-
-          <button
-            type="button"
-            onclick="resetTimer()"
-          >
-            Reset
-          </button>
+          <button class="primary" type="button" onclick="startTimer()">Start</button>
+          <button type="button" onclick="pauseTimer()">Pause</button>
+          <button type="button" onclick="resetTimer()">Reset</button>
         </div>
-
       </div>
 
     </section>
@@ -315,11 +272,7 @@
       <label>Select Date</label>
       <input type="date" id="calendarDate">
 
-      <button
-        class="primary"
-        type="button"
-        onclick="showCalendarTasks()"
-      >
+      <button class="primary" type="button" onclick="showCalendarTasks()">
         View Tasks
       </button>
 
@@ -332,22 +285,10 @@
 
       <h2>My Tasks</h2>
 
-      <input
-        id="taskInput"
-        type="text"
-        placeholder="Enter your task"
-      >
+      <input id="taskInput" type="text" placeholder="Enter your task">
+      <input id="taskDeadline" type="date">
 
-      <input
-        id="taskDeadline"
-        type="date"
-      >
-
-      <button
-        class="primary"
-        type="button"
-        onclick="addTask()"
-      >
+      <button class="primary" type="button" onclick="addTask()">
         Add Task
       </button>
 
@@ -361,7 +302,6 @@
       <h2>My Progress</h2>
 
       <div class="progress-card">
-
         <h1 id="progressPercent">0%</h1>
 
         <div class="progress-track">
@@ -369,7 +309,6 @@
         </div>
 
         <p id="progressText">Keep going!</p>
-
       </div>
 
     </section>
@@ -380,18 +319,9 @@
       <h2>My Profile</h2>
 
       <label>Student Name</label>
+      <input id="studentName" type="text" placeholder="Enter your name">
 
-      <input
-        id="studentName"
-        type="text"
-        placeholder="Enter your name"
-      >
-
-      <button
-        class="primary"
-        type="button"
-        onclick="saveProfile()"
-      >
+      <button class="primary" type="button" onclick="saveProfile()">
         Save Profile
       </button>
 
@@ -404,30 +334,44 @@
   <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
 
-    <button type="button" onclick="showPage('dashboard')">
-      🏠<span>Home</span>
-    </button>
-
-    <button type="button" onclick="showPage('schedule')">
-      📚<span>Schedule</span>
-    </button>
-
-    <button type="button" onclick="showPage('tasks')">
-      ✅<span>Tasks</span>
-    </button>
-
-    <button type="button" onclick="showPage('progress')">
-      📊<span>Progress</span>
-    </button>
-
-    <button type="button" onclick="showPage('profile')">
-      👤<span>Profile</span>
-    </button>
+    <button type="button" onclick="showPage('dashboard')">🏠<span>Home</span></button>
+    <button type="button" onclick="showPage('schedule')">📚<span>Schedule</span></button>
+    <button type="button" onclick="showPage('tasks')">✅<span>Tasks</span></button>
+    <button type="button" onclick="showPage('progress')">📊<span>Progress</span></button>
+    <button type="button" onclick="showPage('profile')">👤<span>Profile</span></button>
 
   </nav>
 
   <!-- JAVASCRIPT -->
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
+
+  <!-- JAVASCRIPT CHECK -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const requiredFunctions = [
+        "showPage",
+        "addTask",
+        "addTaskInput",
+        "addUnavailableTime",
+        "generateStudySchedule",
+        "startTimer",
+        "showTutorial",
+        "toggleLanguage"
+      ];
+
+      const missing = requiredFunctions.filter(
+        name => typeof window[name] !== "function"
+      );
+
+      if (missing.length) {
+        alert("STUDYSMART ERROR: Missing functions: " + missing.join(", "));
+      } else {
+        console.log("STUDYSMART JavaScript loaded successfully!");
+      }
+
+    });
+  </script>
 
 </body>
 </html>
