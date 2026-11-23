@@ -73,7 +73,74 @@ main {
 }
 
 .quote-card,
-.prayer-card {
+.prayer-car
+/* THEME SETTINGS */
+
+body[data-theme="light"] {
+  background: #f7f5ef;
+  color: #171717;
+}
+
+body[data-theme="light"] .card {
+  background: #ffffff;
+  color: #171717;
+  border: 1px solid #e4dfd3;
+}
+
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea {
+  background: #ffffff;
+  color: #171717;
+  border-color: #c9c5bd;
+}
+
+body[data-theme="light"] label {
+  color: #171717;
+}
+
+body[data-theme="gothic"] {
+  background: #100f1d;
+  color: #eee5d4;
+}
+
+body[data-theme="gothic"] .card {
+  background: #272039;
+  color: #eee5d4;
+  border: 1px solid #8c704d;
+}
+
+body[data-theme="celestial"] {
+  background: #eee9ff;
+  color: #30234c;
+}
+
+body[data-theme="celestial"] .card {
+  background: #ffffff;
+  color: #30234c;
+  border: 1px solid #c9b9f2;
+}
+
+body[data-theme="celestial"] input,
+body[data-theme="celestial"] select,
+body[data-theme="celestial"] textarea {
+  background: #faf8ff;
+  color: #30234c;
+  border-color: #b8a6e6;
+}
+
+.theme-settings {
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 14px;
+  background: rgba(128, 110, 160, 0.12);
+}
+
+.theme-settings select {
+  width: 100%;
+  margin-top: 8px;
+}
+d {
   padding: 18px;
   border-radius: 16px;
   margin-bottom: 15px;
@@ -357,4 +424,92 @@ input:focus, select:focus {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* GOTHIC MAGICAL BACKGROUND */
+
+body {
+  background:
+    radial-gradient(circle at 15% 15%, #30244d 0%, transparent 35%),
+    radial-gradient(circle at 85% 80%, #29213f 0%, transparent 35%),
+    #100f1d;
+  color: #eee5d4;
+}
+
+/* Floating decorations */
+.magic-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.magic-star {
+  position: absolute;
+  color: #e8cf91;
+  opacity: 0.7;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.star-one { top: 12%; left: 12%; font-size: 25px; }
+.star-two { top: 35%; right: 10%; font-size: 32px; animation-delay: 1s; }
+.star-three { top: 70%; left: 8%; font-size: 20px; animation-delay: 2s; }
+.star-four { top: 85%; right: 20%; font-size: 28px; animation-delay: 1.5s; }
+
+.floating-book {
+  position: absolute;
+  font-size: 38px;
+  opacity: 0.35;
+  animation: floatBook 6s ease-in-out infinite;
+}
+
+.book-one { top: 25%; right: 8%; }
+.book-two { bottom: 15%; left: 12%; animation-delay: 2s; }
+
+.floating-moon {
+  position: absolute;
+  top: 10%;
+  right: 18%;
+  color: #e8cf91;
+  font-size: 55px;
+  opacity: 0.4;
+  animation: moonGlow 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes floatBook {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-18px) rotate(8deg); }
+}
+
+@keyframes moonGlow {
+  0%, 100% { text-shadow: 0 0 5px #d8bb78; }
+  50% { text-shadow: 0 0 25px #d8bb78; }
+}
+
+/* Keep app content above decorations */
+body > *:not(.magic-background) {
+  position: relative;
+}
+
+.card {
+  background: rgba(39, 32, 57, 0.94);
+  border: 1px solid rgba(221, 190, 126, 0.25);
+  color: #eee5d4;
+}
+
+button {
+  background: linear-gradient(135deg, #6d527f, #a27b52);
+  color: #fff8e9;
+}
+
+input, select, textarea {
+  background: #211c30;
+  color: #fff4df;
+  border: 1px solid #655477;
 }

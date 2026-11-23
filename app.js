@@ -542,9 +542,74 @@ function addTaskInput() {
 }
 
 
+
 function generateStudySchedule() {
-  alert("Generate Study Plan button is working!");
+  const forms = document.querySelectorAll(".task-input");
+  const output = document.getElementById("generatedSchedule");
+
+  if (!output) {
+    alert("Schedule display area is missing!");
+    return;
+  }
+
+  const tasks = [];
+
+  for (const form of forms) {
+    const subject = form.querySelector(".subject").value.trim();
+    const topic = form.querySelector(".topic").value.trim();
+    const deadline = form.querySelector(".deadline").value;
+    const priority = form.querySelector(".priority").value;
+    const hours = Number(form.querySelector(".hours").value);
+
+    if (!subject || !topic || !deadline || !hours) {
+      alert("Please complete all task information.");
+      return;
+    }
+
+    tasks.push({ subject, topic, deadline, priority, hours });
+  }
+
+  if (tasks.length === 0) {
+    alert("Please add at least one task.");
+    return;
+  }
+
+  tasks.sort((a, b) =>
+    a.deadline.localeCompare(b.deadline)
+  );
+
+  output.replaceChildren();
+
+  const heading = document.createElement("h2");
+  heading.textContent = "Your Study Plan";
+  output.appendChild(heading);
+
+  tasks.forEach((task, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = document.createElement("h3");
+    title.textContent = `${index + 1}. ${task.subject}`;
+
+    const details = document.createElement("p");
+    details.textContent =
+      `${task.topic} | Deadline: ${task.deadline} | ` +
+      `${task.priority} Priority | ${task.hours} hour(s)`;
+
+    card.append(title, details);
+    output.appendChild(card);
+  });
+
+  localStorage.setItem(
+    "generatedStudyPlan",
+    JSON.stringify(tasks)
+  );
+
+  output.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  alert("Your study plan has been generated!");
 }
+
 
 let studySoundEnabled = true;
 
@@ -586,4 +651,19 @@ function playStudySound(type = "click") {
   );
 
   oscillator.onended = () => audio.close();
+}
+
+const themeSelect = document.getElementById("themeSelect");
+
+if (themeSelect) {
+  const savedTheme = localStorage.getItem("studySmartTheme") || "light";
+
+  document.body.dataset.theme = savedTheme;
+  themeSelect.value = savedTheme;
+
+  themeSelect.addEventListener("change", function() {
+    document.body.dataset.theme = this.value;
+
+    localStorage.setItem("studySmartTheme", this.value);
+  });
 }
