@@ -1,9 +1,10 @@
+
 {
   "id": "./",
   "name": "STUDYSMART - Your Smart Companion in Studying",
   "short_name": "STUDYSMART",
-  "description": "A smart study planner that helps students organize tasks, schedules, and study time.",
-  "start_url": "./index.html",
+  "description": "A smart study companion that helps students organize schedules, manage school tasks, and track their progress.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -15,7 +16,11 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
-    },
-    { ]
-      
-  
+    }
+  ],
+  "categories": [
+    "education",
+    "productivity"
+  ]
+}
+
