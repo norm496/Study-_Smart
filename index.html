@@ -1,37 +1,128 @@
-
+\
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#3157D5">
   <meta name="description" content="STUDYSMART - Your Smart Companion in Studying">
+
   <title>STUDYSMART</title>
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+  <!-- MAGIC BACKGROUND -->
+  <div class="magic-background" aria-hidden="true">
+    <span class="magic-star star-one">✦</span>
+    <span class="magic-star star-two">✧</span>
+    <span class="magic-star star-three">✦</span>
+    <span class="magic-star star-four">✧</span>
+    <span class="floating-book book-one">📖</span>
+    <span class="floating-book book-two">📚</span>
+    <span class="floating-moon">☾</span>
+  </div>
+
+  <!-- HEADER -->
   <header class="topbar">
     <div>
       <h2>STUDYSMART</h2>
       <p>Your Smart Companion in Studying</p>
     </div>
-    <button id="languageBtn" onclick="toggleLanguage()">EN</button>
+
+    <div class="header-actions">
+  <button type="button" onclick="showTutorial()">
+    ❔ Help Tutorial
+  </button>
+
+  <button id="languageBtn" type="button" onclick="toggleLanguage()">
+    EN TL
+  </button>
+    </div>
   </header>
+<!-- HELP TUTORIAL -->
+<<div id="tutorialModal" class="tutorial-modal" hidden>
+  <div class="tutorial-content">
+    <button class="tutorial-close" type="button" onclick="closeTutorial()">✕</button>
 
-<div class="theme-settings">
-  <label for="themeSelect">Choose Your Study Theme</label>
-  <select id="themeSelect">
-    <option value="light">☀️ Light Academia</option>
-    <option value="gothic">🌙 Gothic Dark Academia</option>
-    <option value="celestial">✨ Celestial Purple</option>
-  </select>
+    <h2 id="tutorialTitle">📚 STUDYSMART GUIDE</h2>
+    <p id="tutorialIntro">Welcome! Here's how to use your study companion.</p>
+
+    <div class="tutorial-step">
+      <h3 id="guide1Title">1. 🏠 Dashboard</h3>
+      <p id="guide1Text">View your motivation, prayer, task summary, and quick access buttons.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide2Title">2. 📅 Create Your Study Plan</h3>
+      <p id="guide2Text">Enter your subject, topic, deadline, priority, and study hours.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide3Title">3. ✅ Manage Your Tasks</h3>
+      <p id="guide3Text">Add your activities and mark them complete when finished.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide4Title">4. ⏱️ Study Timer</h3>
+      <p id="guide4Text">Choose your study duration and tap Start.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide5Title">5. 🗓️ Study Calendar</h3>
+      <p id="guide5Text">Select a date to check your scheduled activities.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide6Title">6. 📊 Track Your Progress</h3>
+      <p id="guide6Text">Check your completed tasks and progress percentage.</p>
+    </div>
+
+    <div class="tutorial-step">
+      <h3 id="guide7Title">7. 👤 Student Profile</h3>
+      <p id="guide7Text">Enter your name and save your profile.</p>
+    </div>
+
+    <p class="tutorial-footer" id="tutorialFooter">
+      ✨ Plan your time. Stay focused. Achieve your goals!
+    </p>
+
+    <button type="button" class="primary" onclick="closeTutorial()" id="tutorialDone">
+      Got It!
+    </button>
+  </div>
 </div>
-
+</>
   <main id="app">
 
+    <!-- TEAM CREDITS -->
+    <section class="prepared-section">
+      <div class="prepared-decoration">✦ ✧ ✦</div>
+
+      <h3>Prepared By</h3>
+      <p class="team-name">SIX BUDDY RESEARCHER</p>
+
+      <div class="team-members">
+        <p>NORMAN L. PERA</p>
+        <p>KATE LOUISE GARCIA</p>
+        <p>ALYSSA MAE ABAN</p>
+        <p>PAULA LERUM</p>
+        <p>JHANNEL ABORQUEZ</p>
+      </div>
+
+      <div class="prepared-decoration">☾ ✦ ☽</div>
+      <p class="app-signature">
+        STUDYSMART · YOUR SMART COMPANION IN STUDYING
+      </p>
+    </section>
+
+    <!-- DASHBOARD -->
     <section id="dashboard" class="page active">
+
       <div class="welcome">
         <h1 id="welcomeText">Welcome, Student!</h1>
         <p>Make today productive.</p>
@@ -39,7 +130,9 @@
 
       <div class="quote-card">
         <h3>Today's Motivation</h3>
-        <p id="quote">Small steps every day lead to big achievements.</p>
+        <p id="quote">
+          Small steps every day lead to big achievements.
+        </p>
       </div>
 
       <div class="prayer-card">
@@ -55,6 +148,7 @@
           <h2 id="totalTasks">0</h2>
           <p>Total Tasks</p>
         </div>
+
         <div class="stat-card">
           <h2 id="completedTasks">0</h2>
           <p>Completed</p>
@@ -62,122 +156,270 @@
       </div>
 
       <h3>Quick Access</h3>
+
       <div class="quick-grid">
-        <button onclick="showPage('schedule')">📚<br>My Schedule</button>
-        <button onclick="showPage('timer')">⏱️<br>Study Timer</button>
-        <button onclick="showPage('calendar')">📅<br>Calendar</button>
-        <button onclick="showPage('tasks')">✅<br>My Tasks</button>
+        <button type="button" onclick="showPage('schedule')">
+          📚<br>My Schedule
+        </button>
+
+        <button type="button" onclick="showPage('timer')">
+          ⏱️<br>Study Timer
+        </button>
+
+        <button type="button" onclick="showPage('calendar')">
+          📅<br>Calendar
+        </button>
+
+        <button type="button" onclick="showPage('tasks')">
+          ✅<br>My Tasks
+        </button>
       </div>
+
     </section>
 
-    <\
-<div class="card">
-  <h2>Automatic Study Schedule Generator</h2>
-  <p>Add all your school tasks, then let STUDYSMART organize them.</p>
+    <!-- AUTOMATIC STUDY SCHEDULE -->
+    <section id="schedule" class="page">
 
-  <div id="taskInputs">
-    <div class="task-input">
-      <label>Subject</label>
-      <input class="subject" placeholder="e.g. Mathematics">
+      <div class="card">
+        <h2>Automatic Study Schedule Generator</h2>
 
-      <label>Topic or Task</label>
-      <input class="topic" placeholder="e.g. Review Fractions">
+        <p>
+          Add all your school tasks, then let STUDYSMART organize them.
+        </p>
 
-      <label>Submission Date</label>
-      <input class="deadline" type="date">
+        <div id="taskInputs">
 
-      <label>Priority</label>
-      <select class="priority">
-        <option value="High">High</option>
-        <option value="Medium" selected>Medium</option>
-        <option value="Low">Low</option>
-      </select>
+          <!-- FIRST TASK FORM -->
+          <div class="task-input">
 
-      <label>Study Hours</label>
-      <input class="hours" type="number" min="1" max="8" value="1">
-      <hr>
-    </div>
-  </div>
+            <label>Subject</label>
+            <input
+              class="subject"
+              type="text"
+              placeholder="e.g. Mathematics"
+            >
 
-  <button type="button" onclick="addTaskInput()">+ Add Another Task</button>
-  <button type="button" onclick="generateStudySchedule()">Generate My Study Plan</button>
+            <label>Topic or Task</label>
+            <input
+              class="topic"
+              type="text"
+              placeholder="e.g. Review Fractions"
+            >
 
-  <div id="generatedSchedule"></div>
-</div>
+            <label>Submission Date</label>
+            <input
+              class="deadline"
+              type="date"
+            >
 
-  <div id="generatedSchedule"></div>
-</div>
-    <section id="timer" class="page">
-      <h2>Study Timer</h2>
-      <div class="timer-box">
-        <h1 id="timerDisplay">25:00</h1>
-        <label>Minutes</label>
-        <input id="timerMinutes" type="number" value="25" min="1">
-        <div class="timer-buttons">
-          <button class="primary" onclick="startTimer()">Start</button>
-          <button onclick="pauseTimer()">Pause</button>
-          <button onclick="resetTimer()">Reset</button>
+            <label>Priority</label>
+            <select class="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+
+            <label>Study Hours</label>
+            <input
+              class="hours"
+              type="number"
+              min="1"
+              max="8"
+              value="1"
+            >
+
+            <hr>
+
+          </div>
         </div>
+
+        <button
+          type="button"
+          onclick="addTaskInput()"
+        >
+          + Add Another Task
+        </button>
+
+        <button
+          type="button"
+          onclick="generateStudySchedule()"
+        >
+          Generate My Study Plan
+        </button>
+
+        <!-- GENERATED RESULTS -->
+        <div id="generatedSchedule"></div>
+
       </div>
+
     </section>
 
+    <!-- STUDY TIMER -->
+    <section id="timer" class="page">
+
+      <h2>Study Timer</h2>
+
+      <div class="timer-box">
+
+        <h1 id="timerDisplay">25:00</h1>
+
+        <label>Minutes</label>
+        <input
+          id="timerMinutes"
+          type="number"
+          value="25"
+          min="1"
+        >
+
+        <div class="timer-buttons">
+          <button
+            class="primary"
+            type="button"
+            onclick="startTimer()"
+          >
+            Start
+          </button>
+
+          <button
+            type="button"
+            onclick="pauseTimer()"
+          >
+            Pause
+          </button>
+
+          <button
+            type="button"
+            onclick="resetTimer()"
+          >
+            Reset
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CALENDAR -->
     <section id="calendar" class="page">
+
       <h2>Study Calendar</h2>
+
       <label>Select Date</label>
       <input type="date" id="calendarDate">
-      <button class="primary" onclick="showCalendarTasks()">View Tasks</button>
+
+      <button
+        class="primary"
+        type="button"
+        onclick="showCalendarTasks()"
+      >
+        View Tasks
+      </button>
+
       <div id="calendarResults"></div>
+
     </section>
 
+    <!-- MY TASKS -->
     <section id="tasks" class="page">
+
       <h2>My Tasks</h2>
-      <input id="taskInput" placeholder="Enter your task">
-      <input id="taskDeadline" type="date">
-      <button class="primary" onclick="addTask()">Add Task</button>
+
+      <input
+        id="taskInput"
+        type="text"
+        placeholder="Enter your task"
+      >
+
+      <input
+        id="taskDeadline"
+        type="date"
+      >
+
+      <button
+        class="primary"
+        type="button"
+        onclick="addTask()"
+      >
+        Add Task
+      </button>
+
       <div id="taskList"></div>
-      <div id="taskInputs">
+
     </section>
 
+    <!-- PROGRESS -->
     <section id="progress" class="page">
+
       <h2>My Progress</h2>
+
       <div class="progress-card">
+
         <h1 id="progressPercent">0%</h1>
+
         <div class="progress-track">
           <div id="progressBar"></div>
         </div>
+
         <p id="progressText">Keep going!</p>
+
       </div>
+
     </section>
 
+    <!-- PROFILE -->
     <section id="profile" class="page">
+
       <h2>My Profile</h2>
+
       <label>Student Name</label>
-      <input id="studentName" placeholder="Enter your name">
-      <button class="primary" onclick="saveProfile()">Save Profile</button>
+
+      <input
+        id="studentName"
+        type="text"
+        placeholder="Enter your name"
+      >
+
+      <button
+        class="primary"
+        type="button"
+        onclick="saveProfile()"
+      >
+        Save Profile
+      </button>
+
       <p id="profileMessage"></p>
+
     </section>
 
   </main>
 
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
-    <button onclick="showPage('dashboard')">🏠<span>Home</span></button>
-    <button onclick="showPage('schedule')">📚<span>Schedule</span></button>
-    <button onclick="showPage('tasks')">✅<span>Tasks</span></button>
-    <button onclick="showPage('progress')">📊<span>Progress</span></button>
-    <button onclick="showPage('profile')">👤<span>Profile</span></button>
-  </nav>
-  <script src="app.js"></script>
-  
-</body>
-  
-<div class="magic-background" aria-hidden="true">
-  <span class="magic-star star-one">✦</span>
-  <span class="magic-star star-two">✧</span>
-  <span class="magic-star star-three">✦</span>
-  <span class="magic-star star-four">✧</span>
-  <span class="floating-book book-one">📖</span>
-  <span class="floating-book book-two">📚</span>
-  <span class="floating-moon">☾</span>
-</div>
 
-</html
+    <button type="button" onclick="showPage('dashboard')">
+      🏠<span>Home</span>
+    </button>
+
+    <button type="button" onclick="showPage('schedule')">
+      📚<span>Schedule</span>
+    </button>
+
+    <button type="button" onclick="showPage('tasks')">
+      ✅<span>Tasks</span>
+    </button>
+
+    <button type="button" onclick="showPage('progress')">
+      📊<span>Progress</span>
+    </button>
+
+    <button type="button" onclick="showPage('profile')">
+      👤<span>Profile</span>
+    </button>
+
+  </nav>
+
+  <!-- JAVASCRIPT -->
+  <script src="app.js"></script>
+
+</body>
+</html>
