@@ -591,3 +591,61 @@ input::placeholder,
 textarea::placeholder {
   opacity: 0.65;
 }
+
+/* DARKER BOXES FOR BETTER TEXT VISIBILITY */
+
+/* LIGHT ACADEMIA */
+body[data-theme="light"] .card,
+body[data-theme="light"] .task-input {
+  background: #e8e5dc !important;
+  color: #171717 !important;
+  border: 1px solid #b8b0a0;
+}
+
+/* GOTHIC DARK ACADEMIA */
+body[data-theme="gothic"] .card,
+body[data-theme="gothic"] .task-input {
+  background: #191525 !important;
+  color: #f1e6d2 !important;
+  border: 1px solid #a58b60;
+}
+
+/* CELESTIAL PURPLE */
+body[data-theme="celestial"] .card,
+body[data-theme="celestial"] .task-input {
+  background: #d9d0ed !important;
+  color: #30234c !important;
+  border: 1px solid #a897c9;
+}
+
+/* DARKER FORM FIELDS */
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea {
+  background: #d8d4ca !important;
+  color: #171717 !important;
+}
+
+body[data-theme="gothic"] input,
+body[data-theme="gothic"] select,
+body[data-theme="gothic"] textarea {
+  background: #30283e !important;
+  color: #171717 !important;
+}
+
+body[data-theme="celestial"] input,
+body[data-theme="celestial"] select,
+body[data-theme="celestial"] textarea {
+  background: #171717 !important;
+  color: #30234c !important;
+}
+
+/* SMOOTH COLOR TRANSITIONS */
+.card,
+.task-input,
+input,
+select,
+textarea {
+  transition: background 0.35s ease, color 0.35s ease,
+              border-color 0.35s ease;
+}
